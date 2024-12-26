@@ -1,38 +1,32 @@
 ## INFO ABOUT DOT-FILES & EVERDAY APPS 
 
-![[Desktop.png]]
+<img src="images\Windows.png">
 
-→ Main Theme 
-GruvBox Dark Material
+<img src="images\Ubuntu.png">
+---
 
-→ Main Browser 
-Firefox Developer
+MainTheme → GruvBox Dark Material
 
-→ Recommended Settings for Browser
-BetterFox
-SmootherFox
+Main Browser → Firefox Developer
 
-→ Package Manager
-Scoop
+Recommended Settings for Browser → BetterFox & SmootherFox
 
-→ Recommend Packages
-ncspot 
-btop
-vim 
-neovim
+Package Manager → Scoop
 
-→ Terminal 
-Windows - PowerShell 
-Ubuntu  -   Zsh
+Recommend Packages → ncspot, btop, vim & neovim
 
-→ Text Editors and IDEs 
-VsCode 
-Webstorm 
+Windows Terminal → PowerShell 
+
+Ubuntu Terminal → Zsh
+
+Text Editors and IDEs → 
+VsCode, 
+Webstorm &
 Clion
 
-→ Productivity Apps 
-Obsidian 
-Notion
+Productivity Apps → 
+Obsidian,
+Notion &
 Everything
 
 
