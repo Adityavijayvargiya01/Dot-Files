@@ -3,30 +3,27 @@
 <img src="images\Windows.png">
 
 <img src="images\Ubuntu.png">
----
+
 
 MainTheme → GruvBox Dark Material
 
-Main Browser → Firefox Developer
+Main Browser → Firefox Developer Edition
 
 Recommended Settings for Browser → BetterFox & SmootherFox
 
-Package Manager → Scoop
+Package Manager → Scoop[Windows] & HomeBrew[Linux]
 
-Recommend Packages → ncspot, btop, vim & neovim
+Recommend Packages → ncspot, btop/htop, vim & neovim
 
-Windows Terminal → PowerShell 
+Windows Terminal → PowerShell + Starship
 
-Ubuntu Terminal → Zsh
+Ubuntu Terminal → Zsh + ohmyzsh
 
-Text Editors and IDEs → 
-VsCode, 
-Webstorm &
-Clion
+Text Editors and IDEs → VsCode, Webstorm & Clion
 
-Productivity Apps → 
-Obsidian,
-Notion &
-Everything
+Productivity Apps → Obsidian, Notion & Everything
 
+#### Great Websites to know
 
+→ Privacy.sexy
+→ Anna's Archive
