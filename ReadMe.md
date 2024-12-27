@@ -4,9 +4,6 @@
 
 <img src="images\Ubuntu.png">
 
-
-MainTheme → GruvBox Dark Material
-
 Main Browser → Firefox Developer Edition
 
 Recommended Settings for Browser → BetterFox & SmootherFox
