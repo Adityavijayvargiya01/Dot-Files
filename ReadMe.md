@@ -1,26 +1,23 @@
 ## INFO ABOUT DOT-FILES & EVERDAY APPS 
 
-<img src="images\Windows.png">
+Firefox Developer Edition
 
-<img src="images\Ubuntu.png">
+BetterFox & SmootherFox
 
-Main Browser → Firefox Developer Edition
-
-Recommended Settings for Browser → BetterFox & SmootherFox
-
-Package Manager → Scoop[Windows] & HomeBrew[Linux]
-
-Recommend Packages → ncspot, btop/htop, vim & neovim
+Scoop[Windows] →  ncspot, btop/htop, vim & neovim
 
 Windows Terminal → PowerShell + Starship
 
 Ubuntu Terminal → Zsh + ohmyzsh
 
-Text Editors and IDEs → VsCode, Webstorm & Clion
+Text Editors and IDEs → NeoVim , VsCode, Webstorm & Clion
 
 Productivity Apps → Obsidian, Notion & Everything
 
 #### Great Websites to know
 
 → Privacy.sexy
+
 → Anna's Archive
+
+→ https://github.com/nvim-lua/kickstart.nvim
