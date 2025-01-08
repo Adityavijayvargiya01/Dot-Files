@@ -16,8 +16,8 @@ Productivity Apps → Obsidian, Notion & Everything
 
 #### Great Websites to know
 
-→ Privacy.sexy
+→ https://privacy.sexy
 
-→ Anna's Archive
+→ https://annas-archive.li
 
 → https://github.com/nvim-lua/kickstart.nvim
