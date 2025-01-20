@@ -14,6 +14,8 @@ Text Editors and IDEs → NeoVim , VsCode, Webstorm & Clion
 
 Productivity Apps → Obsidian, Notion & Everything
 
+Font - Inter & JetBrainsMonoNL Nerd Font
+
 #### Great Websites to know
 
 → https://privacy.sexy
