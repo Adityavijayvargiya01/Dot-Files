@@ -1,25 +1,44 @@
 ## INFO ABOUT DOT-FILES & EVERDAY APPS 
 
-Firefox Developer Edition
+### Browsers: 
+- Brave - Main 
+- Chrome - Secondary
 
-BetterFox & SmootherFox
+### Extensions: 
+- uBlock Origin
+- Dark Reader 
+- Bitwarden 
+- Enhancer for YouTube
+- SponsorBlock
+- Minimal Theme for X
 
-Scoop[Windows] →  ncspot, btop/htop, vim & neovim
+### Terminal: 
+- PowerShell + Starship
+- scoop
+- fastfetch
+- terminal-icons
+- btop
+- spotify_player
+- television
+- Superfile
+- yt-dlp
 
-Windows Terminal → PowerShell + Starship
+### Text Editors & IDEs: 
+- Vim 
+- Notion 
+- Obsidian 
+- Visual Studio Code
+- Cursor
+- Webstorm & Clion
 
-Ubuntu Terminal → Zsh + ohmyzsh
+### Fonts: 
+- JetBrainsMonoNL Nerd Font - Terminal 
+- Inter - UI
 
-Text Editors and IDEs → NeoVim , VsCode, Webstorm & Clion
+### Others: 
+- Localsend 
+- Rufus
+- flow-launcher
+- Privacy.sexy
 
-Productivity Apps → Obsidian, Notion & Everything
 
-Font - Inter & JetBrainsMonoNL Nerd Font
-
-#### Great Websites to know
-
-→ https://privacy.sexy
-
-→ https://annas-archive.li
-
-→ https://github.com/nvim-lua/kickstart.nvim
