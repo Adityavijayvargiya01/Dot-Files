@@ -1,57 +1,125 @@
 {
-    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-    //C:\\Users\\Aditya\\.config\\fastfetch\\dragon.txt
-    "logo": {
-        "source": "none",
-        "padding": {
-            "right": 3
-        }
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  // "
+  "logo": {
+    "source": "C:\\Users\\Aditya\\.config\\fastfetch\\dragon.txt",
+    "padding": {
+	  "top": 3,
+      "right": 3
+    }
+  },
+  "display": {
+    "separator": " ",
+    "size": {
+      "binaryPrefix": "si"
+    }
+  },
+  "modules": [
+    {
+      "type": "separator",
+      "string": " "
     },
-    "display": {
-        "separator": "  "
+    {
+      "type": "os",
+      "key": " 󰖳",
+      "keyColor": "red"
     },
-    "modules": [
-        {
-            "type" : "custom",
-            "format": "╭──────────────────────────────────────────────╮",
-            "outputColor": "red"
-        },
-        {
-            "type": "os",
-            "key": "│  ",
-            "keyColor": "red"
-        },
-        {
-            "type": "terminal",
-            "key": "│  ",
-            "keyColor": "red"
-        },
-        {
-            "type": "shell",
-            "key": "│  ",
-            "keyColor": "red"
-        },
-        {
-            "type": "processes",
-            "format": "{} Prs",
-            "key": "│ 󱁽 ",
-            "keyColor": "red"
-        },
-        {
-            "type": "packages",  
-            "format": "{} Pkgs",
-            "key": "│  ",
-            "keyColor": "red"
-        },
-        {
-            "type": "uptime",
-            "key": "│ 󰔛 ",
-            "keyColor": "red"
-        },        
-        {
-            "type" : "custom",
-            "format": "╰──────────────────────────────────────────────╯",
-            "outputColor": "red"
-        }
-    ]
+    {
+      "type": "terminal",
+      "key": " ",
+      "keyColor": "red"
+    },
+    {
+      "type": "kernel",
+      "key": " 󰒒",
+      "keyColor": "red",
+      "format": "{sysname} {release} {display-version}"
+    },
+    {
+      "type": "shell",
+      "key": " ",
+      "keyColor": "red"
+    },
+    {
+      "type": "separator",
+      "string": " "
+    },
+    {
+      "type": "cpu",
+      "key": " ",
+      "keyColor": "red",
+      "temp": true,
+      "format": "{name} {temperature}"
+    },
+    {
+      "type": "gpu",
+      "key": " ",
+      "keyColor": "red",
+      "temp": true,
+      "format": "{name} {temperature}"
+    },
+    {
+      "type": "separator",
+      "string": " "
+    },
+    {
+      "type": "display",
+      "key": " 󰍹",
+      "keyColor": "red",
+      "format": "{name} {bit-depth}-bit {width}x{height} {refresh-rate}Hz {ppi}PPI"
+    },
+    {
+      "type": "physicaldisk",
+      "key": " ",
+      "keyColor": "red",
+      "temp": true,
+      "format": "{interconnect} {physical-type} {size} {temperature}"
+    },
+    {
+      "type": "memory",
+      "key": " ",
+      "keyColor": "red",
+      "format": "{used} / {total} {percentage}"
+    },
+    {
+      "type": "separator",
+      "string": " "
+    },
+    {
+      "type": "terminalfont",
+      "key": " ",
+      "keyColor": "red",
+      "format": "{name}"
+    },
+    {
+      "type": "processes",
+      "format": "{} Prs",
+      "key": " 󱁽",
+      "keyColor": "red"
+    },
+    {
+      "type": "packages",
+      "format": "{} Pkgs",
+      "key": " ",
+      "keyColor": "red"
+    },
+    {
+      "type": "uptime",
+      "key": " 󰔛",
+      "keyColor": "red",
+      "format": "UPTIME {days}D.{hours}H.{minutes}M.{seconds}S"
+    },
+	    {
+      "type": "separator",
+      "string": " "
+    },
+	"colors"
+  ]
 }
+
+// {
+//     "type" : "custom",
+//     "format": "──────────────────────────────────────────────",
+//     "outputColor": "red"
+// },
+// "break",

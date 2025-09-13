@@ -1,0 +1,21 @@
+format = """
+$username\
+$hostname\
+$directory\
+$cmd_duration\
+$line_break\
+$python\
+$character"""
+
+[character]
+success_symbol = "[](#A6E3A1)"
+error_symbol = "[](#DC749E)"
+vimcmd_symbol = "[](#94E2D5)"
+
+[cmd_duration]
+format = "[$duration]($style) "
+style = "#F9E2AF"
+
+[python]
+format = "[$virtualenv]($style) "
+style = "#6D5D7F"

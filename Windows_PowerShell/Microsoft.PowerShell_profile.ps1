@@ -5,17 +5,28 @@ fastfetch
 #Folders
 function home { cd ~ }
 function projects { cd ~/Projects } 
+function documents { cd ~/iCloudDrive/Documents } 
 
 #Scoop 
 function list { scoop list } 
-function update { scoop update * } 
+function su { scoop update && scoop status } 
 function cleanup { scoop cleanup * } 
 function cache_cleanup { scoop cache rm * }
 
 #powershell
 function pro { code $PROFILE }
-function pron { nvim $PROFILE}
+function pn { nvim $PROFILE}
+function local { cd C:\Users\Aditya\AppData\Local } 
+function roaming { cd C:\Users\Aditya\AppData\Roaming } 
 function load { .$PROFILE }
+function path { pwd | scb }
+function newt { wezterm.exe } 
+function rd { rm -r -FORCE }
+
+function edit {
+    param([string]$FilePath)
+    notepad++ $FilePath
+}
 
 function spt { spotify_player } 
 function ntp { ntop -s MEM }
@@ -64,4 +75,5 @@ function brd { bun run dev }
 function brb { bun run build }
 function bpm { bun pm }
 
-
+#wsl 
+function wslshut { wsl --shutdown }
