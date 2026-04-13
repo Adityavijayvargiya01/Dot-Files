@@ -1,0 +1,13 @@
+{
+  "baseFontSize": 16,
+  "interfaceFontFamily": "Inter Variable Text",
+  "textFontFamily": "Inter Variable Text",
+  "monospaceFontFamily": "JetBrainsMono Nerd Font Mono",
+  "cssTheme": "Minimal",
+  "showRibbon": false,
+  "nativeMenus": false,
+  "showViewHeader": true,
+  "enabledCssSnippets": [
+    "internal-link-hover"
+  ]
+}

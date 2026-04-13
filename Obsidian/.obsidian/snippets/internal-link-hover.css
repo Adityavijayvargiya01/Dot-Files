@@ -1,0 +1,15 @@
+/* Remove underline on hover for internal links (reading + editor). */
+.markdown-rendered .internal-link:hover,
+.cm-s-obsidian span.cm-hmd-internal-link:hover,
+.cm-s-obsidian span.cm-link:hover,
+a.internal-link:hover {
+  text-decoration: none !important;
+}
+
+/* Hide properties/frontmatter only inside hover preview cards. */
+.popover.hover-popover .metadata-container,
+.popover.hover-popover .metadata-properties,
+.popover.hover-popover .frontmatter,
+.popover.hover-popover .cm-line.HyperMD-frontmatter {
+  display: none !important;
+}

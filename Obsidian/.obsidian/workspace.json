@@ -1,0 +1,247 @@
+{
+  "main": {
+    "id": "a5aa16682b912a8b",
+    "type": "split",
+    "children": [
+      {
+        "id": "20f24feb5e4a5fce",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a1e3e237981a7f38",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f07e265146b9368b",
+    "type": "split",
+    "children": [
+      {
+        "id": "54725d014e6ba5be",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "37face125387f7a0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "a91602985765c58c",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "28a299afdc18041a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 337.5
+  },
+  "right": {
+    "id": "53572f23638886f3",
+    "type": "split",
+    "children": [
+      {
+        "id": "28f68f2d35ce6956",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bd41e79d54868ccf",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Bucket-List-2026.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "Bucket-List-2026"
+            }
+          },
+          {
+            "id": "c7fe9ea590efbfab",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          },
+          {
+            "id": "2bf40b9d6fbd63d7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Tools.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": true,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Tools"
+            }
+          },
+          {
+            "id": "d78a0bb05898ab5d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "State of Software/content.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from content"
+            }
+          },
+          {
+            "id": "795eb57ce00f77ee",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d7c6349fd8f0b95d",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 397.5,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "a1e3e237981a7f38",
+  "lastOpenFiles": [
+    "Analysis/How It All Connects.md",
+    "Analysis/Indian Market Playbook.md",
+    "Concepts/What is Interest Rate.md",
+    "Analysis/How It All Connects - Beginner Map.md",
+    "Inbox/_cli_test.md",
+    "Instruments/ETF vs Mutual Fund.md",
+    "Instruments/Government Securities India.md",
+    "Instruments/Expense Ratio and Its Impact.md",
+    "Concepts/What the RBI Does.md",
+    "Concepts/What is Money.md",
+    "Concepts/Inflation Explained.md",
+    "AGENTS.md",
+    "Analysis/Macro/Current Account Deficit India.md",
+    "Analysis/Fundamental/How to Read a Cash Flow Statement.md",
+    "Analysis/Fundamental/What is ROCE and ROE.md",
+    "Analysis/Fundamental/How to Read a Balance Sheet.md",
+    "Analysis/Fundamental/Debt to Equity Ratio.md",
+    "Analysis/Fundamental/What is P/E Ratio.md",
+    "Analysis/Fundamental/What is P/B Ratio.md",
+    "Analysis/Fundamental/What is EV/EBITDA.md",
+    "Analysis/Fundamental/What is EV",
+    "Analysis/Fundamental/What is P",
+    "Analysis/Fundamental/How to Read a P&L Statement.md",
+    "Analysis/Fundamental",
+    "Analysis/Macro/How Budget Affects Markets.md",
+    "Analysis/Macro/Index of Industrial Production.md",
+    "Analysis/Macro/Rupee and Exchange Rate.md",
+    "Analysis/Macro/Fiscal Deficit Explained.md",
+    "Analysis/Macro/Inflation Data India.md",
+    "Analysis/Macro",
+    "Markets/India",
+    "Personal",
+    "Inbox",
+    "Analysis",
+    "Markets",
+    "Instruments",
+    "Dream-Board.canvas",
+    "Attachments/Images/nothing-ear-a.png",
+    "Attachments/Images/setup-idea-4.png",
+    "Attachments/Images/setup-idea-3.png",
+    "Attachments/Images/setup-idea-1.jpg",
+    "Attachments/Images/setup-Idea-2.png",
+    "Attachments/Images/Japan.jpg",
+    "Attachments/Images/Sony WH-1000XM5.jpg",
+    "Attachments/Images/Sony XM5s.jpg",
+    "Attachments/Images/Macbook Pro.jpg",
+    "Attachments/Images/XM5s.jpg"
+  ]
+}

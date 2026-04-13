@@ -1,0 +1,88 @@
+{
+	"servers": {
+		"microsoft/playwright-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest"
+			],
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.0.1-seed"
+		},
+		"io.github.vercel/next-devtools-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"next-devtools-mcp@0.3.6"
+			],
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.3.6"
+		},
+		"microsoft/markitdown": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"markitdown-mcp==0.0.1a4"
+			],
+			"gallery": "https://api.mcp.github.com",
+			"version": "1.0.0"
+		},
+		"io.github.github/github-mcp-server": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-github"
+			],
+			"env": {
+				"GITHUB_PERSONAL_ACCESS_TOKEN": "${input:token}"
+			},
+			"gallery": "https://api.mcp.github.com"
+		},
+		"Astro docs": {
+			"type": "http",
+			"url": "https://mcp.docs.astro.build/mcp"
+		},
+		"obsidian": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"mcp-obsidian",
+				"${input:vaultPath}"
+			],
+			"type": "stdio"
+		},
+		"io.github.upstash/context7": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@upstash/context7-mcp@1.0.31"
+			],
+			"env": {
+				"CONTEXT7_API_KEY": "${input:CONTEXT7_API_KEY}"
+			},
+			"gallery": "https://api.mcp.github.com",
+			"version": "1.0.31"
+		}
+	},
+	"inputs": [
+		{
+			"id": "vaultPath",
+			"type": "promptString",
+			"description": "Path to Obsidian vault",
+			"default": "C:/Users/Aditya/iCloudDrive/iCloud~md~obsidian/Obsidian"
+		},
+		{
+			"id": "token",
+			"type": "promptString",
+			"description": "GitHub Personal Access Token",
+			"password": true
+		},
+		{
+			"id": "CONTEXT7_API_KEY",
+			"type": "promptString",
+			"description": "API key for authentication",
+			"password": true
+		}
+	]
+}
