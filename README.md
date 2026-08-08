@@ -5,6 +5,7 @@
 - Starship Prompt
 - Fastfetch (with dragon ASCII art)
 - Terminal Icons
+- Herdr (terminal workspace manager)
 - OMP Agent Config
 
 **Editor**
@@ -37,6 +38,9 @@ Copy-Item .\nvim\* $env:LOCALAPPDATA\nvim\ -Recurse -Force
 
 # OMP Agent
 Copy-Item .\omp\* $env:USERPROFILE\.omp\ -Recurse -Force
+
+# Herdr
+Copy-Item .\herdr\* $env:USERPROFILE\.config\herdr\ -Recurse -Force
 ```
 
 ## Softwares & Libs
