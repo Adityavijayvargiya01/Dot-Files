@@ -1,0 +1,26 @@
+modelRoles: 
+  default: google-antigravity/gemini-3.6-flash
+symbolPreset: nerd
+theme: 
+  dark: dark-tokyo-night
+  light: light-tokyo-night
+setupVersion: 1
+statusLine: 
+  preset: custom
+  leftSegments: 
+    - mode
+    - model
+  rightSegments: 
+    - path
+    - git
+    - subagents
+    - usage
+  separator: slash
+display: 
+  hideToolActivity: true
+hideThinkingBlock: true
+defaultThinkingLevel: auto
+tools: 
+  approvalMode: yolo
+advisor: 
+  enabled: true

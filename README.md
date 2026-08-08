@@ -5,6 +5,7 @@
 - Starship Prompt
 - Fastfetch (with dragon ASCII art)
 - Terminal Icons
+- OMP Agent Config
 
 **Editor**
 - Neovim (LazyVim)
@@ -33,6 +34,9 @@ Copy-Item .\Fastfetch\* $env:USERPROFILE\.config\fastfetch\ -Recurse -Force
 
 # Neovim
 Copy-Item .\nvim\* $env:LOCALAPPDATA\nvim\ -Recurse -Force
+
+# OMP Agent
+Copy-Item .\omp\* $env:USERPROFILE\.omp\ -Recurse -Force
 ```
 
 ## Softwares & Libs
