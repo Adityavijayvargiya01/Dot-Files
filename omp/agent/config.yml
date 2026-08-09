@@ -19,6 +19,7 @@ statusLine:
     - usage
   separator: slash
   sessionAccent: false
+  transparent: true
 display: 
   hideToolActivity: true
   shimmer: disabled
