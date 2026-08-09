@@ -18,6 +18,7 @@ statusLine:
     - subagents
     - usage
   separator: slash
+  sessionAccent: false
 display: 
   hideToolActivity: true
   shimmer: disabled
