@@ -1,5 +1,7 @@
 modelRoles: 
-  default: google-antigravity/gemini-3.6-flash
+  smol: google-antigravity/gemini-3.6-flash
+  advisor: xai-oauth/grok-4.5
+  default: xai-oauth/grok-4.5:medium
 symbolPreset: nerd
 theme: 
   dark: dark-tokyo-night
@@ -18,9 +20,12 @@ statusLine:
   separator: slash
 display: 
   hideToolActivity: true
+  shimmer: disabled
 hideThinkingBlock: true
 defaultThinkingLevel: auto
 tools: 
   approvalMode: yolo
 advisor: 
   enabled: true
+startup: 
+  quiet: true
