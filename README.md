@@ -7,6 +7,7 @@
 - Terminal Icons
 - Herdr (terminal workspace manager)
 - OMP Agent Config
+- Pi Agent (settings, MCP, extensions, themes)
 
 **Editor**
 - Neovim (LazyVim)
@@ -41,6 +42,9 @@ Copy-Item .\omp\* $env:USERPROFILE\.omp\ -Recurse -Force
 
 # Herdr
 Copy-Item .\herdr\* $env:USERPROFILE\.config\herdr\ -Recurse -Force
+
+# Pi Agent
+Copy-Item .\pi\* $env:USERPROFILE\.pi\ -Recurse -Force
 ```
 
 ## Softwares & Libs

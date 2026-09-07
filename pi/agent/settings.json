@@ -1,0 +1,18 @@
+{
+  "lastChangelogVersion": "0.85.0",
+  "theme": "dark",
+  "defaultProvider": "xai",
+  "defaultModel": "grok-4.6",
+  "defaultThinkingLevel": "medium",
+  "packages": [
+    "npm:pi-mcp-adapter"
+  ],
+  "hideThinkingBlock": true,
+  "tuiMode": "fullscreen",
+  "markdown": {
+    "mermaid": "streaming"
+  },
+  "terminal": {
+    "showTerminalProgress": false
+  }
+}
