@@ -18,6 +18,12 @@
 **Browser**
 - Nightab Configuration
 
+**Omarchy**
+- Custom menu plugin (`aditya.menu` — cloned from `omarchy.menu` with custom layout/rows)
+- Herdr status plugin (`aditya.herdr` — traffic-light bar widget for Herdr agents)
+- Shell config (`shell.json` — bottom bar, custom clock format, idle/lock timings)
+- Shell tweaks (`shell.toml` — font size, spacing)
+
 **Extras**
 - Curated Wallpapers
 - StartAllBack Bypass
@@ -45,6 +51,13 @@ Copy-Item .\herdr\* $env:USERPROFILE\.config\herdr\ -Recurse -Force
 
 # Pi Agent
 Copy-Item .\pi\* $env:USERPROFILE\.pi\ -Recurse -Force
+```
+
+```bash
+# Omarchy (Linux)
+cp ./omarchy/shell.json ./omarchy/shell.toml ~/.config/omarchy/ -f
+cp -r ./omarchy/plugins/aditya.menu ./omarchy/plugins/aditya.herdr ~/.config/omarchy/plugins/ -f
+omarchy restart shell
 ```
 
 ## Softwares & Libs

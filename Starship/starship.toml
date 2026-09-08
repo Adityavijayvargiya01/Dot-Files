@@ -2,20 +2,30 @@ format = """
 $username\
 $hostname\
 $directory\
+$git_branch\
+$git_status\
 $cmd_duration\
 $line_break\
 $python\
 $character"""
 
 [character]
-success_symbol = "[](#A6E3A1)"
-error_symbol = "[](#DC749E)"
-vimcmd_symbol = "[](#94E2D5)"
+success_symbol = "[](bold green)"
+error_symbol = "[](bold red)"
+vimcmd_symbol = "[](bold cyan)"
 
 [cmd_duration]
 format = "[$duration]($style) "
-style = "#F9E2AF"
+style = "yellow"
+
+[git_branch]
+format = "[$branch]($style) "
+style = "blue"
+
+[git_status]
+format = "[$all_status]($style)"
+style = "green"
 
 [python]
 format = "[$virtualenv]($style) "
-style = "#6D5D7F"
+style = "magenta"

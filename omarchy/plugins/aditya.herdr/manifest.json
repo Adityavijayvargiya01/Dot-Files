@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "aditya.herdr",
+  "name": "Herdr",
+  "version": "1.0.0",
+  "author": "aditya",
+  "description": "Traffic-light status for Herdr agents",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Herdr",
+    "description": "Red / yellow / green lights for Herdr agent status",
+    "category": "AI",
+    "allowMultiple": false
+  }
+}

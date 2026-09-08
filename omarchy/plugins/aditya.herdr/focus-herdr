@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Focus an already-open Herdr window; launch one if none exists.
+
+set -u
+
+has_herdr_token() {
+  [[ $1 =~ (^|[[:space:]/=])herdr([[:space:]]|$) ]]
+}
+
+is_herdr_window() {
+  local pid="$1" cmd children child ccmd
+  cmd=$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null) || return 1
+  has_herdr_token "$cmd" && return 0
+  children=$(< "/proc/$pid/task/$pid/children" 2>/dev/null) || return 1
+  for child in $children; do
+    ccmd=$(tr '\0' ' ' < "/proc/$child/cmdline" 2>/dev/null) || continue
+    has_herdr_token "$ccmd" && return 0
+  done
+  return 1
+}
+
+address=""
+while IFS=$'\t' read -r addr pid class; do
+  [[ -n $addr ]] || continue
+  if [[ $class == org.omarchy.herdr ]] || is_herdr_window "$pid"; then
+    address=$addr
+    break
+  fi
+done < <(hyprctl clients -j | jq -r '.[] | [.address, (.pid|tostring), .class] | @tsv')
+
+if [[ -n $address ]]; then
+  hyprctl dispatch "hl.dsp.focus({ window = \"address:$address\" })" >/dev/null
+  exit 0
+fi
+
+exec omarchy-launch-or-focus-tui herdr
