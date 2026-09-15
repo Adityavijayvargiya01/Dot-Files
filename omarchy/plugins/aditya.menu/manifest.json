@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "aditya.menu",
-  "name": "My Omarchy menu",
+  "name": "Minima",
   "version": "1.0.0",
   "author": "Omarchy",
   "description": "Quickshell-powered Omarchy command menu",
@@ -15,7 +15,7 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "My Omarchy menu",
+    "displayName": "Minima",
     "description": "Launches the Omarchy menu",
     "category": "Compositor",
     "allowMultiple": false

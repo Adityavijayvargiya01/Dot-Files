@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "aditya.herdr",
-  "name": "Herdr",
+  "name": "Traffic Herdr",
   "version": "1.0.0",
   "author": "aditya",
-  "description": "Traffic-light status for Herdr agents",
+  "description": "Traffic-light status for Pi, OpenCode, and other Herdr agents",
   "kinds": [
     "bar-widget"
   ],
@@ -12,8 +12,8 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "Herdr",
-    "description": "Red / yellow / green lights for Herdr agent status",
+    "displayName": "Traffic Herdr",
+    "description": "Red / yellow / green lights for Pi, OpenCode, and Herdr agent status",
     "category": "AI",
     "allowMultiple": false
   }

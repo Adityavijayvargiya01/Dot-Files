@@ -1,5 +1,22 @@
 {
   "settings": {
     "mcpFooterStatus": "off"
+  },
+  "mcpServers": {
+    "raindrop": {
+      "url": "https://api.raindrop.io/rest/v2/ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${RAINDROP_TOKEN}"
+      }
+    },
+    "notion": {
+      "url": "https://mcp.notion.com/mcp",
+      "auth": "oauth",
+      "protocolVersion": "auto"
+    },
+    "paper": {
+      "url": "http://127.0.0.1:29979/mcp",
+      "auth": false
+    }
   }
 }

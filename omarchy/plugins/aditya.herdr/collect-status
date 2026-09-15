@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""Aggregate harness status files and Herdr into one traffic-light snapshot."""
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+from pathlib import Path
+
+PRIORITY = ("blocked", "working", "unknown", "idle")
+# These harnesses write the shared status files directly, so counting them
+# again from `herdr agent list` would double-count the same session.
+FILE_HARNESSES = {
+    "pi",
+    "opencode",
+    "herdr:pi",
+    "herdr:opencode",
+    "open-code",
+}
+
+
+def state_dir() -> Path:
+    root = os.environ.get("XDG_STATE_HOME") or str(Path.home() / ".local/state")
+    return Path(root) / "aditya.herdr" / "agents"
+
+
+def pid_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+    except Exception:
+        return False
+
+
+def normalize(state: str) -> str:
+    value = (state or "unknown").strip().lower()
+    if value == "done":
+        return "idle"
+    if value in PRIORITY:
+        return value
+    return "unknown"
+
+
+def file_records() -> tuple[list[dict], list[Path]]:
+    directory = state_dir()
+    records: list[dict] = []
+    stale: list[Path] = []
+    if not directory.is_dir():
+        return records, stale
+    for path in directory.glob("*.json"):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            stale.append(path)
+            continue
+        if not isinstance(data, dict):
+            stale.append(path)
+            continue
+        pid = data.get("pid")
+        if isinstance(pid, int) and pid > 0 and not pid_alive(pid):
+            stale.append(path)
+            continue
+        state = normalize(str(data.get("state") or "unknown"))
+        harness = str(data.get("harness") or "unknown")
+        records.append(
+            {
+                "id": str(data.get("id") or path.stem),
+                "harness": harness,
+                "state": state,
+                "source": "file",
+            }
+        )
+    return records, stale
+
+
+def herdr_records() -> tuple[list[dict], bool]:
+    try:
+        raw = subprocess.check_output(
+            ["herdr", "agent", "list"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=2,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return [], False
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return [], False
+    agents = (
+        payload.get("result", {}).get("agents")
+        if isinstance(payload, dict)
+        else None
+    )
+    if not isinstance(agents, list):
+        return [], True
+    records = []
+    for agent in agents:
+        if not isinstance(agent, dict):
+            continue
+        kind = str(agent.get("agent") or agent.get("display_agent") or "")
+        if kind.lower() in FILE_HARNESSES:
+            continue
+        records.append(
+            {
+                "id": str(agent.get("pane_id") or agent.get("name") or kind or "herdr"),
+                "harness": kind or "herdr",
+                "state": normalize(str(agent.get("agent_status") or "unknown")),
+                "source": "herdr",
+            }
+        )
+    return records, True
+
+
+def main() -> None:
+    files, stale = file_records()
+    for path in stale:
+        try:
+            path.unlink()
+        except OSError:
+            pass
+    herdr, herdr_online = herdr_records()
+    agents = files + herdr
+    counts = {name: 0 for name in PRIORITY}
+    for agent in agents:
+        counts[agent["state"]] = counts.get(agent["state"], 0) + 1
+    snapshot = {
+        "online": bool(files) or herdr_online,
+        "counts": counts,
+        "agents": agents,
+    }
+    print(json.dumps(snapshot, separators=(",", ":")))
+
+
+if __name__ == "__main__":
+    main()

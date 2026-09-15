@@ -7,6 +7,9 @@
           "id": "omarchy.indicators"
         },
         {
+          "id": "aditya.grayscale"
+        },
+        {
           "id": "omarchy.clock",
           "birthYear": 0,
           "format": "dddd h:mm AP",
@@ -24,9 +27,6 @@
           "id": "omarchy.weather"
         },
         {
-          "id": "omarchy.tray"
-        },
-        {
           "id": "omarchy.spacer"
         },
         {
@@ -39,9 +39,15 @@
         },
         {
           "id": "omarchy.workspaces"
+        },
+        {
+          "id": "aditya.ram"
         }
       ],
       "right": [
+        {
+          "id": "omarchy.tray"
+        },
         {
           "id": "omarchy.bluetooth"
         },
@@ -63,16 +69,16 @@
     "position": "bottom",
     "transparent": false
   },
-  "cloneSourceRestores": [
-    "aditya.menu"
-  ],
-  "disabledPlugins": [
-    "omarchy.menu"
-  ],
   "idle": {
     "lock": 300,
     "screensaver": 150
   },
   "plugins": [],
-  "version": 1
+  "version": 1,
+  "disabledPlugins": [
+    "omarchy.menu"
+  ],
+  "cloneSourceRestores": [
+    "aditya.menu"
+  ]
 }

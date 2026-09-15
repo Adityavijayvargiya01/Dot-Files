@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Write one harness-agnostic agent status record.
+
+Usage:
+  report-status set <harness> <id> <state> [pid]
+  report-status clear <id>
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import sys
+import tempfile
+import time
+from pathlib import Path
+
+STATES = {"working", "blocked", "idle"}
+SAFE_ID = re.compile(r"[^A-Za-z0-9._-]+")
+
+
+def state_dir() -> Path:
+    root = os.environ.get("XDG_STATE_HOME") or str(Path.home() / ".local/state")
+    path = Path(root) / "aditya.herdr" / "agents"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def sanitize(agent_id: str) -> str:
+    cleaned = SAFE_ID.sub("-", agent_id).strip("-")
+    return cleaned or "agent"
+
+
+def record_path(agent_id: str) -> Path:
+    return state_dir() / f"{sanitize(agent_id)}.json"
+
+
+def atomic_write(path: Path, payload: dict) -> None:
+    fd, tmp = tempfile.mkstemp(prefix=".", suffix=".tmp", dir=path.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, separators=(",", ":"))
+            handle.write("\n")
+        os.replace(tmp, path)
+    except Exception:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def cmd_set(harness: str, agent_id: str, state: str, pid: str | None) -> None:
+    if state not in STATES:
+        raise SystemExit(f"unknown state: {state}")
+    record = {
+        "id": agent_id,
+        "harness": harness,
+        "state": state,
+        "updatedAt": int(time.time() * 1000),
+    }
+    if pid:
+        try:
+            record["pid"] = int(pid)
+        except ValueError as exc:
+            raise SystemExit(f"invalid pid: {pid}") from exc
+    atomic_write(record_path(agent_id), record)
+
+
+def cmd_clear(agent_id: str) -> None:
+    path = record_path(agent_id)
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        pass
+
+
+def main(argv: list[str]) -> None:
+    if len(argv) < 2:
+        raise SystemExit(__doc__.strip())
+    action = argv[1]
+    if action == "set":
+        if len(argv) < 5:
+            raise SystemExit("usage: report-status set <harness> <id> <state> [pid]")
+        cmd_set(argv[2], argv[3], argv[4], argv[5] if len(argv) > 5 else None)
+        return
+    if action == "clear":
+        if len(argv) < 3:
+            raise SystemExit("usage: report-status clear <id>")
+        cmd_clear(argv[2])
+        return
+    raise SystemExit(__doc__.strip())
+
+
+if __name__ == "__main__":
+    main(sys.argv)

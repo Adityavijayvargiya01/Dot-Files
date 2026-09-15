@@ -78,6 +78,11 @@ Item {
   // Shared application engine (entries, hidden filters, icons, launch,
   // removal), owned by the shell and also used by the standalone launcher.
   readonly property var appLibrary: root.shell ? root.shell.appLibrary : null
+  // Same hide sources AppLibrary uses: packaged launcher.hides plus Hidden /
+  // NoDisplay / OnlyShowIn from desktop files. Needed because cloned menus
+  // get PluginShellApi and appLibrary is often null.
+  property var configuredHiddenEntryIds: ({})
+  property var desktopHiddenEntryIds: ({})
   property bool deleteConfirmOpen: false
   property var deleteTarget: null
   onOpenedChanged: if (!opened) { deleteConfirmOpen = false; deleteTarget = null }
@@ -285,19 +290,114 @@ Item {
     return MenuModel.slugify(value)
   }
 
-  // The apps provider is QML-native: rows come from the shared AppLibrary
-  // (DesktopEntries) instead of a bash enumeration, so they carry image
-  // icons, launch feedback, and uninstall support like the launcher.
-  function mergeAppRows() {
-    if (!root.appLibrary) return
+  // Cloned menus get PluginShellApi instead of the host ShellRoot. That
+  // facade is supposed to expose appLibrary, but the property is null, so
+  // stock mergeAppRows() would return immediately. DesktopEntries still
+  // works from third-party QML — use it when the facade library is missing,
+  // with the same hide rules as omarchy.menu / AppLibrary.
+  function desktopEntryName(entry) {
+    return String((entry && entry.name) || (entry && entry.id) || "")
+  }
 
-    var rows = root.appLibrary.sortedEntries("")
+  function desktopEntrySubtext(entry) {
+    return String((entry && entry.genericName) || "")
+  }
+
+  function normalizeDesktopId(id) {
+    var value = String(id || "").trim()
+    if (value.slice(-8) === ".desktop") value = value.slice(0, -8)
+    return value
+  }
+
+  function loadIdMap(rawText) {
+    var next = ({})
+    var lines = String(rawText || "").split(/\n/)
+    for (var i = 0; i < lines.length; i++) {
+      var id = root.normalizeDesktopId(lines[i])
+      if (id.length > 0) next[id] = true
+    }
+    return next
+  }
+
+  function isHiddenEntry(entry) {
+    var id = String((entry && entry.id) || "")
+    if (!id) return false
+    if (entry.hidden === true) return true
+    return root.configuredHiddenEntryIds[id] === true || root.desktopHiddenEntryIds[id] === true
+  }
+
+  function hiddenEntryScanCommand() {
+    var desktop = [Quickshell.env("XDG_CURRENT_DESKTOP"), Quickshell.env("XDG_SESSION_DESKTOP"), Quickshell.env("DESKTOP_SESSION")].filter(function(v) { return String(v || "").length > 0 }).join(":")
+    var script = root.omarchyPath + "/shell/services/hidden-entries.sh"
+    return Util.shellQuote(script) + " " + Util.shellQuote(desktop)
+  }
+
+  function onHiddenEntriesChanged() {
+    if (root.appLibrary) return
+    if (root.providersLoaded["apps"]) root.mergeAppRows()
+  }
+
+  function loadConfiguredHides(rawText) {
+    root.configuredHiddenEntryIds = root.loadIdMap(rawText)
+    root.onHiddenEntriesChanged()
+  }
+
+  function loadDesktopHiddenEntries(rawText) {
+    root.desktopHiddenEntryIds = root.loadIdMap(rawText)
+    root.onHiddenEntriesChanged()
+  }
+
+  function desktopSortedEntries() {
+    var values = DesktopEntries.applications.values || []
+    var rows = []
+    for (var i = 0; i < values.length; i++) {
+      var entry = values[i]
+      if (!entry || entry.noDisplay) continue
+      if (root.isHiddenEntry(entry)) continue
+      if (!root.desktopEntryName(entry)) continue
+      rows.push({ entry: entry })
+    }
+    return rows
+  }
+
+  function iconSourceFor(icon) {
+    if (root.appLibrary) return root.appLibrary.iconSource(icon)
+    var value = String(icon || "")
+    if (!value) return Quickshell.iconPath("application-x-executable", true)
+    if (value.indexOf("file://") === 0 || value.indexOf("image://") === 0) return value
+    if (value.charAt(0) === "/") return Util.fileUrl(value)
+    var themed = Quickshell.iconPath(value, true)
+    return themed || Quickshell.iconPath("application-x-executable", true)
+  }
+
+  function launchApp(appId, name) {
+    if (root.appLibrary) {
+      root.appLibrary.launch(appId, name)
+      return
+    }
+    var id = String(appId || "")
+    if (!id) return
+    Util.execDetached("uwsm-app -- gtk-launch " + Util.shellQuote(id + ".desktop"))
+  }
+
+  function removeApp(appId, name) {
+    if (root.appLibrary) {
+      root.appLibrary.remove(appId, name)
+      return
+    }
+    var id = String(appId || "")
+    if (!id) return
+    Util.execDetached(Util.shellQuote(root.omarchyPath + "/bin/omarchy-remove-launcher-entry") + " " + Util.shellQuote(id) + " " + Util.shellQuote(String(name || id)))
+  }
+
+  function mergeAppRows() {
+    var rows = root.appLibrary ? root.appLibrary.sortedEntries("") : root.desktopSortedEntries()
     var appRows = []
     for (var j = 0; j < rows.length; j++) {
       var entry = rows[j].entry
-      var appId = String(entry.id || "")
+      var appId = String((entry && entry.id) || "")
       if (!appId) continue
-      var subtext = root.appLibrary.entrySubtext(entry)
+      var subtext = root.appLibrary ? root.appLibrary.entrySubtext(entry) : root.desktopEntrySubtext(entry)
       var aliases = subtext ? [subtext] : []
       try {
         if (entry.keywords && typeof entry.keywords.join === "function") aliases = aliases.concat(entry.keywords)
@@ -309,7 +409,7 @@ Item {
         icon: "",
         appIcon: String(entry.icon || ""),
         appId: appId,
-        label: root.appLibrary.entryName(entry),
+        label: root.appLibrary ? root.appLibrary.entryName(entry) : root.desktopEntryName(entry),
         title: "",
         target: "",
         description: subtext,
@@ -739,7 +839,7 @@ Item {
       applySerial = requestSerial
       opened = false
       filterText = ""
-      if (root.appLibrary) root.appLibrary.launch(appId, label)
+      root.launchApp(appId, label)
     } else {
       root.applySelected(row.itemId, row.action)
     }
@@ -768,7 +868,7 @@ Item {
     root.deleteTarget = null
     if (!target) return
     root.cancel()
-    if (root.appLibrary) root.appLibrary.remove(target.appId, target.label)
+    root.removeApp(target.appId, target.label)
   }
 
   function applyDmenuSelection(value) {
@@ -915,6 +1015,38 @@ Item {
     function onAppsChanged() {
       if (root.providersLoaded["apps"]) root.mergeAppRows()
     }
+  }
+
+  Connections {
+    target: DesktopEntries.applications
+    function onValuesChanged() {
+      if (root.appLibrary) return
+      hiddenEntryScan.running = true
+      if (root.providersLoaded["apps"]) root.mergeAppRows()
+    }
+  }
+
+  FileView {
+    path: root.omarchyPath + "/default/omarchy/launcher.hides"
+    watchChanges: true
+    printErrors: false
+    onLoaded: root.loadConfiguredHides(text())
+    onFileChanged: root.loadConfiguredHides(text())
+    onLoadFailed: root.loadConfiguredHides("")
+  }
+
+  QtObject {
+    id: hiddenEntryOutput
+    property string text: ""
+  }
+
+  Process {
+    id: hiddenEntryScan
+    command: ["bash", "-c", root.hiddenEntryScanCommand()]
+    running: true
+    stdout: SplitParser { onRead: function(line) { hiddenEntryOutput.text += line + "\n" } }
+    onStarted: hiddenEntryOutput.text = ""
+    onExited: root.loadDesktopHiddenEntries(hiddenEntryOutput.text)
   }
 
   // The JSONC sources are watched so live edits to the default file (or the
@@ -1261,7 +1393,7 @@ Item {
                 // PNG icons upscaled and blurry on HiDPI displays.
                 sourceSize.width: width * Screen.devicePixelRatio
                 sourceSize.height: height * Screen.devicePixelRatio
-                source: row.isApp && root.appLibrary ? root.appLibrary.iconSource(row.appIcon) : ""
+                source: row.isApp ? root.iconSourceFor(row.appIcon) : ""
                 asynchronous: true
                 anchors.left: parent.left
                 anchors.leftMargin: root.rowReservedBorderLeft + Style.space(8) + (Style.space(36) - width) / 2
