@@ -1,6 +1,18 @@
 [font]
-base-size = 12
+base-size = 14
+
+[bar]
+size-horizontal = 32
 
 [spacing]
 md = 2
 xs = 1
+
+[tooltip]
+background-alpha = 1.0
+
+[launcher]
+background-alpha = 1.0
+
+[lock]
+background-alpha = 1.0

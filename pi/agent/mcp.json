@@ -1,7 +1,4 @@
 {
-  "settings": {
-    "mcpFooterStatus": "off"
-  },
   "mcpServers": {
     "raindrop": {
       "url": "https://api.raindrop.io/rest/v2/ai/mcp",
@@ -9,14 +6,17 @@
         "Authorization": "Bearer ${RAINDROP_TOKEN}"
       }
     },
-    "notion": {
-      "url": "https://mcp.notion.com/mcp",
-      "auth": "oauth",
-      "protocolVersion": "auto"
+    "canva": {
+      "url": "https://mcp.canva.com/mcp",
+      "description": "Create, edit, search, and export Canva designs"
     },
-    "paper": {
-      "url": "http://127.0.0.1:29979/mcp",
-      "auth": false
+    "pencil": {
+      "command": "/home/aditya/.local/share/pen/mcp-server-linux-x64",
+      "args": [
+        "--app",
+        "desktop"
+      ],
+      "description": "pen.dev desktop app"
     }
   }
 }

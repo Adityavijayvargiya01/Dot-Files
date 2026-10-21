@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 from pathlib import Path
 
@@ -13,8 +14,10 @@ PRIORITY = ("blocked", "working", "unknown", "idle")
 FILE_HARNESSES = {
     "pi",
     "opencode",
+    "omp",
     "herdr:pi",
     "herdr:opencode",
+    "herdr:omp",
     "open-code",
 }
 
@@ -43,6 +46,72 @@ def normalize(state: str) -> str:
     return "unknown"
 
 
+PI_MARK = re.compile(r"^π\s*")
+BRAILLE_SPINNER = re.compile(r"^[\u2800-\u28FF]+\s*")
+
+
+def clean_title(title: str) -> str:
+    text = " ".join(title.split())
+    text = PI_MARK.sub("", text)
+    text = BRAILLE_SPINNER.sub("", text)
+    return text.strip()
+
+
+def useful_title(title: str, fallback: str) -> str:
+    cleaned = clean_title(title)
+    if not cleaned or cleaned.casefold() == fallback.casefold():
+        return fallback
+    if len(cleaned) > 72:
+        return cleaned[:71].rstrip() + "…"
+    return cleaned
+
+
+def ancestors(pid: int):
+    seen: set[int] = set()
+    current = pid
+    while current > 1 and current not in seen:
+        seen.add(current)
+        yield current
+        try:
+            text = Path(f"/proc/{current}/stat").read_text(encoding="utf-8")
+        except OSError:
+            break
+        end = text.rfind(")")
+        parts = text[end + 2 :].split()
+        if len(parts) < 2:
+            break
+        try:
+            current = int(parts[1])
+        except ValueError:
+            break
+
+
+def window_titles() -> dict[int, str]:
+    try:
+        raw = subprocess.check_output(["hyprctl", "clients", "-j"], text=True, timeout=2)
+        clients = json.loads(raw)
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError):
+        return {}
+    titles: dict[int, str] = {}
+    if not isinstance(clients, list):
+        return titles
+    for client in clients:
+        if not isinstance(client, dict):
+            continue
+        client_pid = client.get("pid")
+        title = client.get("title")
+        if isinstance(client_pid, int) and isinstance(title, str) and title:
+            titles[client_pid] = title
+    return titles
+
+
+def title_for_pid(pid: int, titles: dict[int, str]) -> str:
+    for candidate in ancestors(pid):
+        title = titles.get(candidate)
+        if title:
+            return title
+    return ""
+
 def file_records() -> tuple[list[dict], list[Path]]:
     directory = state_dir()
     records: list[dict] = []
@@ -64,14 +133,23 @@ def file_records() -> tuple[list[dict], list[Path]]:
             continue
         state = normalize(str(data.get("state") or "unknown"))
         harness = str(data.get("harness") or "unknown")
-        records.append(
-            {
-                "id": str(data.get("id") or path.stem),
-                "harness": harness,
-                "state": state,
-                "source": "file",
-            }
+        explicit_label = data.get("label")
+        label = (
+            useful_title(str(explicit_label), harness)
+            if explicit_label
+            else harness
         )
+        record = {
+            "id": str(data.get("id") or path.stem),
+            "harness": harness,
+            "label": label,
+            "state": state,
+            "source": "file",
+            "_labelExplicit": bool(explicit_label),
+        }
+        if isinstance(pid, int) and pid > 0:
+            record["pid"] = pid
+        records.append(record)
     return records, stale
 
 
@@ -103,10 +181,19 @@ def herdr_records() -> tuple[list[dict], bool]:
         kind = str(agent.get("agent") or agent.get("display_agent") or "")
         if kind.lower() in FILE_HARNESSES:
             continue
+        name = str(agent.get("name") or "")
+        kind_label = name or kind or "herdr"
+        raw_title = str(
+            agent.get("terminal_title_stripped")
+            or agent.get("terminal_title")
+            or agent.get("title")
+            or ""
+        )
         records.append(
             {
-                "id": str(agent.get("pane_id") or agent.get("name") or kind or "herdr"),
+                "id": str(agent.get("pane_id") or name or kind or "herdr"),
                 "harness": kind or "herdr",
+                "label": useful_title(raw_title, kind_label) if raw_title else kind_label,
                 "state": normalize(str(agent.get("agent_status") or "unknown")),
                 "source": "herdr",
             }
@@ -123,6 +210,18 @@ def main() -> None:
             pass
     herdr, herdr_online = herdr_records()
     agents = files + herdr
+    titles = window_titles()
+    for agent in agents:
+        pid = agent.get("pid")
+        if isinstance(pid, int) and pid > 0 and not agent.get("_labelExplicit"):
+            title = title_for_pid(pid, titles)
+            if title:
+                agent["label"] = useful_title(
+                    title,
+                    str(agent.get("harness") or agent.get("label") or "agent"),
+                )
+        agent.pop("_labelExplicit", None)
+    agents.sort(key=lambda agent: PRIORITY.index(agent["state"]) if agent["state"] in PRIORITY else len(PRIORITY))
     counts = {name: 0 for name in PRIORITY}
     for agent in agents:
         counts[agent["state"]] = counts.get(agent["state"], 0) + 1

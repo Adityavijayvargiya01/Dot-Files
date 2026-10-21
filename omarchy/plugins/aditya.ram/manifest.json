@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "aditya.ram",
+  "name": "RAM",
+  "version": "1.0.0",
+  "author": "aditya",
+  "description": "Compact RAM usage with CPU and GPU temps for the bar",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "RAM",
+    "description": "Memory used with CPU and GPU temperature",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "aditya.tweet",
+  "name": "Compose",
+  "version": "1.0.0",
+  "author": "aditya",
+  "description": "Minimal overlay to draft and drop tweets",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "Composer.qml"
+  }
+}

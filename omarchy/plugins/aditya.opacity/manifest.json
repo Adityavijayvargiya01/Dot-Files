@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "aditya.opacity",
+  "name": "Opaque windows",
+  "version": "1.0.0",
+  "author": "aditya",
+  "description": "Toggle Hyprland windows between fully opaque and Omarchy's stock transparency.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Opaque windows",
+    "description": "Solid or stock window transparency",
+    "category": "Status",
+    "allowMultiple": false,
+    "defaultSection": "center"
+  }
+}

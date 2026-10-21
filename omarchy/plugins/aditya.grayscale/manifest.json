@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "aditya.grayscale",
+  "name": "Grayscale",
+  "version": "1.0.0",
+  "author": "aditya",
+  "description": "Toggle a grayscale Hyprland screen shader from the bar.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Grayscale",
+    "description": "Grayscale screen filter",
+    "category": "Status",
+    "allowMultiple": false,
+    "defaultSection": "center"
+  }
+}

@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Focus the terminal or Herdr pane for one agent record.
+
+Usage: focus-agent '<json>'
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+
+def ancestors(pid: int):
+    seen: set[int] = set()
+    current = pid
+    while current > 1 and current not in seen:
+        seen.add(current)
+        yield current
+        try:
+            text = Path(f"/proc/{current}/stat").read_text(encoding="utf-8")
+        except OSError:
+            break
+        end = text.rfind(")")
+        parts = text[end + 2 :].split()
+        if len(parts) < 2:
+            break
+        try:
+            current = int(parts[1])
+        except ValueError:
+            break
+
+
+def window_address(pid: int) -> str | None:
+    try:
+        raw = subprocess.check_output(["hyprctl", "clients", "-j"], text=True, timeout=2)
+        clients = json.loads(raw)
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError):
+        return None
+    by_pid: dict[int, str] = {}
+    if not isinstance(clients, list):
+        return None
+    for client in clients:
+        if not isinstance(client, dict):
+            continue
+        client_pid = client.get("pid")
+        address = client.get("address")
+        if isinstance(client_pid, int) and isinstance(address, str) and address:
+            by_pid[client_pid] = address
+    for candidate in ancestors(pid):
+        address = by_pid.get(candidate)
+        if address:
+            return address
+    return None
+
+
+def focus_address(address: str) -> None:
+    selector = address if address.startswith("address:") else f"address:{address}"
+    subprocess.check_call(
+        ["hyprctl", "dispatch", f'hl.dsp.focus({{ window = "{selector}" }})'],
+        timeout=2,
+    )
+
+
+def focus_herdr(agent_id: str) -> bool:
+    try:
+        subprocess.check_call(["herdr", "agent", "focus", agent_id], timeout=2)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return True
+
+
+def main(argv: list[str]) -> None:
+    if len(argv) < 2:
+        raise SystemExit("usage: focus-agent <json>")
+    try:
+        agent = json.loads(argv[1])
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"invalid agent: {exc}") from exc
+    if not isinstance(agent, dict):
+        raise SystemExit("invalid agent")
+    source = str(agent.get("source") or "")
+    agent_id = str(agent.get("id") or "")
+    if source == "herdr" and agent_id and focus_herdr(agent_id):
+        return
+    pid = agent.get("pid")
+    if not isinstance(pid, int) or pid <= 0:
+        raise SystemExit(0)
+    address = window_address(pid)
+    if not address:
+        raise SystemExit(0)
+    focus_address(address)
+
+
+if __name__ == "__main__":
+    main(sys.argv)

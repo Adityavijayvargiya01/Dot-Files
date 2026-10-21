@@ -28,9 +28,12 @@ const SESSION_STATE_BY_STATUS = new Map([
 const CHILD_EVENT_STATES = new Map([
   ["permission.asked", "blocked"],
   ["question.asked", "blocked"],
+  ["form.created", "blocked"],
   ["permission.replied", "working"],
   ["question.replied", "working"],
   ["question.rejected", "working"],
+  ["form.replied", "working"],
+  ["form.cancelled", "working"],
 ]);
 
 function run(args) {
@@ -153,7 +156,249 @@ export const TrafficHerdrPlugin = async () => {
   };
 };
 
+function sessionIDFromV2Event(event) {
+  const data = event?.data;
+  if (typeof data?.sessionID === "string" && data.sessionID) {
+    return data.sessionID;
+  }
+  if (typeof data?.form?.sessionID === "string" && data.form.sessionID) {
+    return data.form.sessionID;
+  }
+  return undefined;
+}
+
+export async function TrafficHerdrSetup(ctx) {
+  const sessions = new Map();
+  const titles = new Map();
+  const childSessions = new Map();
+  const fetchingTitles = new Set();
+  const pid = String(process.pid);
+  const legacyId = `${harness}-${process.pid}`;
+  const recentWindowMs = 12 * 60 * 60 * 1000;
+  let disposed = false;
+
+  function sessionAgentId(sessionID) {
+    return `${harness}-${sessionID}`;
+  }
+
+  function labelFor(sessionID) {
+    return titles.get(sessionID) || harness;
+  }
+
+  function reportSession(sessionID, state) {
+    if (disposed || !sessionID) return;
+    run([
+      "set",
+      harness,
+      sessionAgentId(sessionID),
+      state,
+      pid,
+      labelFor(sessionID),
+    ]);
+  }
+
+  function clearSession(sessionID) {
+    if (!sessionID) return;
+    run(["clear", sessionAgentId(sessionID)]);
+  }
+
+  function rootOf(sessionID) {
+    let current = sessionID;
+    const seen = new Set();
+    while (current && childSessions.has(current) && !seen.has(current)) {
+      seen.add(current);
+      current = childSessions.get(current);
+    }
+    return current || sessionID;
+  }
+
+  function rememberTitle(sessionID, title) {
+    if (!sessionID || typeof title !== "string" || !title.trim()) return;
+    const rootID = rootOf(sessionID);
+    titles.set(rootID, title.split(/\s+/).join(" ").trim());
+    const state = sessions.get(rootID);
+    if (state) reportSession(rootID, state);
+  }
+
+  function fetchTitle(sessionID) {
+    if (!sessionID || titles.has(sessionID) || fetchingTitles.has(sessionID)) return;
+    fetchingTitles.add(sessionID);
+    void (async () => {
+      try {
+        const result = await ctx.session.get({ sessionID });
+        const session = result?.data ?? result;
+        if (session?.title) rememberTitle(sessionID, session.title);
+      } catch {
+        // Title is cosmetic; status still works without it.
+      } finally {
+        fetchingTitles.delete(sessionID);
+      }
+    })();
+  }
+
+  function setState(sessionID, state) {
+    if (!sessionID) return;
+    const rootID = rootOf(sessionID);
+    const previous = sessions.get(rootID);
+    sessions.set(rootID, state);
+    fetchTitle(rootID);
+    if (previous !== state) reportSession(rootID, state);
+  }
+
+  async function handleV2Event(event) {
+    const type = event?.type;
+    const data = event?.data ?? {};
+    const sessionID = sessionIDFromV2Event(event);
+    const info = data.info ?? data.session;
+    const infoID =
+      typeof data.sessionID === "string" && data.sessionID
+        ? data.sessionID
+        : typeof data.id === "string" && data.id
+          ? data.id
+          : typeof info?.id === "string"
+            ? info.id
+            : undefined;
+    const parentID =
+      typeof data.parentID === "string" && data.parentID
+        ? data.parentID
+        : typeof info?.parentID === "string" && info.parentID
+          ? info.parentID
+          : undefined;
+    if (infoID && parentID) childSessions.set(infoID, parentID);
+
+    const titledID =
+      typeof data.sessionID === "string" && data.sessionID
+        ? data.sessionID
+        : typeof data.id === "string" && data.id
+          ? data.id
+          : infoID;
+    const title =
+      typeof data.title === "string" && data.title
+        ? data.title
+        : typeof info?.title === "string" && info.title
+          ? info.title
+          : undefined;
+    if (titledID && title) rememberTitle(titledID, title);
+
+    if (sessionID && childSessions.has(sessionID)) {
+      const state = CHILD_EVENT_STATES.get(type);
+      if (state) setState(rootOf(sessionID), state);
+      return;
+    }
+
+    switch (type) {
+      case "session.status": {
+        const state = stateFromSessionStatus(data.status);
+        if (state) setState(sessionID, state);
+        break;
+      }
+      case "session.inbox.delivered":
+      case "session.inbox.enqueued":
+      case "session.execution.started":
+      case "session.step.started":
+      case "session.text.started":
+      case "session.tool.called":
+      case "session.tool.progress":
+      case "session.tool.success":
+      case "session.tool.failed":
+      case "session.compaction.started":
+      case "session.compaction.ended":
+      case "permission.replied":
+      case "form.replied":
+      case "form.cancelled":
+        setState(sessionID, "working");
+        break;
+      case "permission.asked":
+      case "form.created":
+      case "session.execution.failed":
+      case "session.compaction.failed":
+      case "session.step.failed":
+        setState(sessionID, "blocked");
+        break;
+      case "session.execution.interrupted":
+      case "session.execution.succeeded":
+      case "session.idle":
+        setState(sessionID, "idle");
+        break;
+      case "session.deleted": {
+        const deletedID = sessionID || infoID;
+        if (!deletedID) break;
+        const rootID = rootOf(deletedID);
+        if (rootID === deletedID) {
+          sessions.delete(deletedID);
+          titles.delete(deletedID);
+          clearSession(deletedID);
+        } else {
+          childSessions.delete(deletedID);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  async function seedRecentSessions() {
+    try {
+      const query = { limit: 100 };
+      if (ctx.location?.directory) query.directory = ctx.location.directory;
+      const page = await ctx.session.list(query);
+      const list = Array.isArray(page)
+        ? page
+        : Array.isArray(page?.data)
+          ? page.data
+          : [];
+      const now = Date.now();
+      for (const session of list) {
+        if (!session?.id || session.parentID) continue;
+        const stamp = session.time?.viewed ?? session.time?.updated ?? 0;
+        if (!stamp || now - stamp > recentWindowMs) continue;
+        if (session.title)
+          titles.set(session.id, session.title.split(/\s+/).join(" ").trim());
+        if (sessions.has(session.id)) continue;
+        sessions.set(session.id, "idle");
+        reportSession(session.id, "idle");
+      }
+    } catch {
+      // Seeding is optional; live events still drive status.
+    }
+  }
+
+  run(["clear", legacyId]);
+
+  const controller = new AbortController();
+  void (async () => {
+    try {
+      for await (const event of ctx.event.subscribe({ signal: controller.signal })) {
+        try {
+          await handleV2Event(event);
+        } catch {
+          // Status is best-effort; never break the session.
+        }
+      }
+    } catch {
+      // Subscription ended (e.g. unload); nothing to report.
+    }
+  })();
+
+  await ctx.session.hook("prompt", async (event) => {
+    if (event.sessionID && childSessions.has(event.sessionID)) return;
+    setState(event.sessionID, "working");
+  });
+
+  await seedRecentSessions();
+
+  return () => {
+    disposed = true;
+    controller.abort();
+    for (const sessionID of sessions.keys()) clearSession(sessionID);
+    run(["clear", legacyId]);
+  };
+}
+
+
 export default {
   id: `${SOURCE}.opencode`,
+  setup: TrafficHerdrSetup,
   server: TrafficHerdrPlugin,
 };

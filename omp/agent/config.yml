@@ -1,33 +1,39 @@
-modelRoles: 
-  smol: google-antigravity/gemini-3.6-flash
-  advisor: xai-oauth/grok-4.5
-  default: xai-oauth/grok-4.5:medium
 symbolPreset: nerd
-theme: 
-  dark: dark-tokyo-night
-  light: light-tokyo-night
-setupVersion: 1
-statusLine: 
+composer:
+  shape: pi
+theme:
+  dark: mire
+  light: light
+setupVersion: 2
+statusLine:
   preset: custom
-  leftSegments: 
-    - mode
+  separator: none
+  transparent: true
+  compactThinkingLevel: false
+  leftSegments:
     - model
-  rightSegments: 
+    - cost
+    - cache_hit
+    - token_in
+    - token_out
+  rightSegments:
     - path
     - git
-    - subagents
-    - usage
-  separator: slash
-  sessionAccent: false
-  transparent: true
-display: 
-  hideToolActivity: true
-  shimmer: disabled
+    - session_name
+  segmentOptions:
+    path:
+      abbreviate: true
+      maxLength: 80
+      stripWorkPrefix: false
+    git:
+      showBranch: true
+      showStaged: false
+      showUnstaged: false
+      showUntracked: false
+    model:
+      showThinkingLevel: true
 hideThinkingBlock: true
-defaultThinkingLevel: auto
-tools: 
-  approvalMode: yolo
-advisor: 
-  enabled: true
-startup: 
-  quiet: true
+display:
+  hideToolActivity: false
+vault:
+  enabled: false

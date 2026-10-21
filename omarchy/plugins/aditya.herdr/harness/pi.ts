@@ -14,6 +14,7 @@ const pluginDir = join(
   "omarchy/plugins/aditya.herdr",
 );
 const reporter = join(pluginDir, "report-status");
+let currentSessionName: string | undefined;
 
 function run(args: string[]): void {
   try {
@@ -25,7 +26,9 @@ function run(args: string[]): void {
 }
 
 function report(state: AgentState): void {
-  run(["set", harness, agentId, state, String(process.pid)]);
+  const args = ["set", harness, agentId, state, String(process.pid)];
+  if (currentSessionName) args.push(currentSessionName);
+  run(args);
 }
 
 function clear(): void {
@@ -37,6 +40,27 @@ export default function (pi: any) {
   let agentActive = false;
   let promptCount = 0;
   let lastState: AgentState | undefined;
+  let lastLabel: string | undefined;
+
+  function syncSessionName(ctx?: any): void {
+    let name: unknown;
+    try {
+      name = ctx?.sessionManager?.getSessionName?.();
+    } catch {
+      name = undefined;
+    }
+    if (typeof name !== "string" || !name.trim()) {
+      try {
+        name = pi.getSessionName?.();
+      } catch {
+        name = undefined;
+      }
+    }
+    currentSessionName =
+      typeof name === "string" && name.trim()
+        ? name.trim().replace(/\s+/g, " ")
+        : undefined;
+  }
 
   function desired(): AgentState {
     if (promptCount > 0) return "blocked";
@@ -46,27 +70,37 @@ export default function (pi: any) {
 
   function publish(force = false): void {
     const next = desired();
-    if (!force && next === lastState) return;
+    if (!force && next === lastState && currentSessionName === lastLabel) return;
     lastState = next;
+    lastLabel = currentSessionName;
     report(next);
   }
 
   pi.on("session_start", async (_event: any, ctx: any) => {
     if (ctx?.mode !== "tui") return;
     rootSession = true;
+    syncSessionName(ctx);
     agentActive = ctx?.isIdle?.() === false;
     promptCount = 0;
     publish(true);
   });
 
-  pi.on("agent_start", () => {
+  pi.on("session_info_changed", (_event: any, ctx: any) => {
     if (!rootSession) return;
+    syncSessionName(ctx);
+    publish();
+  });
+
+  pi.on("agent_start", (_event: any, ctx: any) => {
+    if (!rootSession) return;
+    syncSessionName(ctx);
     agentActive = true;
     publish();
   });
 
   pi.on("agent_settled", (_event: any, ctx: any) => {
     if (!rootSession) return;
+    syncSessionName(ctx);
     if (ctx?.isIdle?.() === true) agentActive = false;
     publish();
   });
@@ -86,6 +120,8 @@ export default function (pi: any) {
   pi.on("session_shutdown", () => {
     rootSession = false;
     lastState = undefined;
+    lastLabel = undefined;
+    currentSessionName = undefined;
     clear();
   });
 }

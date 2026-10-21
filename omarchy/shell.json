@@ -4,33 +4,27 @@
     "layout": {
       "center": [
         {
-          "id": "omarchy.indicators"
+          "id": "omarchy.weather"
         },
         {
-          "id": "aditya.grayscale"
-        },
-        {
-          "id": "omarchy.clock",
           "birthYear": 0,
-          "format": "dddd h:mm AP",
+          "format": "HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
           "lifeExpectancy": 75,
           "verticalFormat": "h\n—\nmm\nAP"
         },
         {
-          "id": "aditya.herdr"
+          "id": "omarchy.indicators"
         },
         {
           "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "omarchy.weather"
-        },
-        {
-          "id": "omarchy.spacer"
-        },
-        {
           "id": "omarchy.system-update"
+        },
+        {
+          "id": "aditya.grayscale"
         }
       ],
       "left": [
@@ -41,21 +35,34 @@
           "id": "omarchy.workspaces"
         },
         {
-          "id": "aditya.ram"
+          "id": "omarchy.spacer"
+        },
+        {
+          "id": "io.github.adityavijayvargiya01.coverglow",
+          "layout": "vertical",
+          "notifications": false
         }
       ],
       "right": [
         {
-          "id": "omarchy.tray"
+          "id": "omarchy.tray",
+          "pinned": [],
+          "hidden": []
+        },
+        {
+          "id": "aditya.herdr"
+        },
+        {
+          "id": "omarchy.agents"
+        },
+        {
+          "id": "omarchy.audio"
         },
         {
           "id": "omarchy.bluetooth"
         },
         {
           "id": "omarchy.network"
-        },
-        {
-          "id": "omarchy.audio"
         },
         {
           "id": "omarchy.monitor"
@@ -66,19 +73,26 @@
         }
       ]
     },
-    "position": "bottom",
+    "position": "top",
     "transparent": false
   },
+  "cloneSourceRestores": [
+    "aditya.menu"
+  ],
+  "disabledPlugins": [
+    "omarchy.menu"
+  ],
   "idle": {
     "lock": 300,
     "screensaver": 150
   },
-  "plugins": [],
-  "version": 1,
-  "disabledPlugins": [
-    "omarchy.menu"
+  "plugins": [
+    {
+      "id": "aditya.tweet"
+    },
+    {
+      "id": "macos.dock"
+    }
   ],
-  "cloneSourceRestores": [
-    "aditya.menu"
-  ]
+  "version": 1
 }

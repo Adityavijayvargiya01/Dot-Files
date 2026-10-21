@@ -1,9 +1,7 @@
 {
-  "lastChangelogVersion": "0.85.1",
+  "lastChangelogVersion": "1.3.0",
   "theme": "dark",
-  "defaultProvider": "xai",
-  "defaultModel": "grok-4.6",
-  "defaultThinkingLevel": "low",
+  "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-subagents",
@@ -16,5 +14,8 @@
   },
   "terminal": {
     "showTerminalProgress": false
-  }
+  },
+  "extensions": [
+    "-builtin:mcp"
+  ]
 }

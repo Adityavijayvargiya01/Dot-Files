@@ -4,7 +4,7 @@
   "name": "Traffic Herdr",
   "version": "1.0.0",
   "author": "aditya",
-  "description": "Traffic-light status for Pi, OpenCode, and other Herdr agents",
+  "description": "Traffic-light status for Pi, OpenCode, OMP, and other Herdr agents",
   "kinds": [
     "bar-widget"
   ],
@@ -13,7 +13,7 @@
   },
   "barWidget": {
     "displayName": "Traffic Herdr",
-    "description": "Red / yellow / green lights for Pi, OpenCode, and Herdr agent status",
+    "description": "Red / yellow / green lights for Pi, OpenCode, OMP, and Herdr agent status",
     "category": "AI",
     "allowMultiple": false
   }

@@ -2,7 +2,7 @@
 """Write one harness-agnostic agent status record.
 
 Usage:
-  report-status set <harness> <id> <state> [pid]
+  report-status set <harness> <id> <state> [pid] [label]
   report-status clear <id>
 """
 from __future__ import annotations
@@ -50,7 +50,13 @@ def atomic_write(path: Path, payload: dict) -> None:
         raise
 
 
-def cmd_set(harness: str, agent_id: str, state: str, pid: str | None) -> None:
+def cmd_set(
+    harness: str,
+    agent_id: str,
+    state: str,
+    pid: str | None,
+    label: str | None = None,
+) -> None:
     if state not in STATES:
         raise SystemExit(f"unknown state: {state}")
     record = {
@@ -64,6 +70,10 @@ def cmd_set(harness: str, agent_id: str, state: str, pid: str | None) -> None:
             record["pid"] = int(pid)
         except ValueError as exc:
             raise SystemExit(f"invalid pid: {pid}") from exc
+    if label:
+        cleaned = " ".join(label.split())
+        if cleaned:
+            record["label"] = cleaned
     atomic_write(record_path(agent_id), record)
 
 
@@ -81,8 +91,17 @@ def main(argv: list[str]) -> None:
     action = argv[1]
     if action == "set":
         if len(argv) < 5:
-            raise SystemExit("usage: report-status set <harness> <id> <state> [pid]")
-        cmd_set(argv[2], argv[3], argv[4], argv[5] if len(argv) > 5 else None)
+            raise SystemExit(
+                "usage: report-status set <harness> <id> <state> [pid] [label]"
+            )
+        label = " ".join(argv[6:]) if len(argv) > 6 else None
+        cmd_set(
+            argv[2],
+            argv[3],
+            argv[4],
+            argv[5] if len(argv) > 5 else None,
+            label,
+        )
         return
     if action == "clear":
         if len(argv) < 3:

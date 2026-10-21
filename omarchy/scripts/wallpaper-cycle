@@ -1,0 +1,47 @@
+#!/bin/bash
+# Pick a random wallpaper from the current theme's user backgrounds only.
+# Images that ship inside the theme, such as omarchy.png, stay out of this
+# loop. If the current wallpaper is one of those, leave it until the user
+# picks a rotating image again.
+
+THEME_NAME=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null)
+USER_BACKGROUNDS_PATH="$HOME/.config/omarchy/backgrounds/$THEME_NAME/"
+CURRENT_BACKGROUND_LINK="$HOME/.local/state/omarchy/current/background"
+
+mapfile -d '' -t BACKGROUNDS < <(
+  find -L "$USER_BACKGROUNDS_PATH" -maxdepth 1 -type f \
+    \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.bmp' -o -iname '*.webp' \) \
+    -print0 2>/dev/null | sort -z
+)
+TOTAL=${#BACKGROUNDS[@]}
+(( TOTAL > 0 )) || exit 0
+
+# Resolve symlinks on both sides so the comparison survives a theme whose
+# background directory is itself linked.
+CURRENT_BACKGROUND=""
+if [[ -L $CURRENT_BACKGROUND_LINK ]]; then
+  CURRENT_BACKGROUND=$(readlink -f "$CURRENT_BACKGROUND_LINK")
+fi
+
+# The current wallpaper must be one of the rotating images. If it is not, the
+# user set this wallpaper on purpose, so leave it alone.
+CURRENT_IS_ROTATING=false
+for background in "${BACKGROUNDS[@]}"; do
+  if [[ -n $CURRENT_BACKGROUND && $(realpath "$background") == "$CURRENT_BACKGROUND" ]]; then
+    CURRENT_IS_ROTATING=true
+    break
+  fi
+done
+[[ $CURRENT_IS_ROTATING == true ]] || exit 0
+
+# Drop the current wallpaper from the pool so a shuffle always produces a
+# visible change instead of occasionally re-picking the same image.
+CANDIDATES=()
+for background in "${BACKGROUNDS[@]}"; do
+  [[ $(realpath "$background") != "$CURRENT_BACKGROUND" ]] && CANDIDATES+=("${background}")
+done
+CANDIDATES_TOTAL=${#CANDIDATES[@]}
+(( CANDIDATES_TOTAL > 0 )) || exit 0
+
+NEXT_INDEX=$(shuf -i "0-$((CANDIDATES_TOTAL - 1))" -n 1)
+omarchy-theme-bg-set "${CANDIDATES[$NEXT_INDEX]}"

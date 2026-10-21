@@ -6,7 +6,7 @@
 - Fastfetch (with dragon ASCII art)
 - Terminal Icons
 - Herdr (terminal workspace manager)
-- OMP Agent Config
+- OMP Agent (config, Mire theme, Herdr extension)
 - Pi Agent (settings, MCP, extensions, themes)
 
 **Editor**
@@ -20,9 +20,13 @@
 
 **Omarchy**
 - Custom menu plugin (`aditya.menu` — cloned from `omarchy.menu` with custom layout/rows)
-- Herdr status plugin (`aditya.herdr` — traffic-light bar widget for Herdr agents)
-- Shell config (`shell.json` — bottom bar, custom clock format, idle/lock timings)
-- Shell tweaks (`shell.toml` — font size, spacing)
+- Herdr status plugin (`aditya.herdr` — traffic-light bar widget for Pi, OpenCode, OMP, and other Herdr agents)
+- Bar widgets (`aditya.grayscale`, `aditya.opacity`, `aditya.ram`)
+- Compose overlay (`aditya.tweet` — draft and post tweets)
+- Menu extension (`omarchy-menu.jsonc` — grayscale toggle), wallpaper rotation script, and macOS dock pins
+- Shell config (`shell.json` — top bar, custom clock format, idle/lock timings)
+- Shell tweaks (`shell.toml` — font size, spacing, bar height)
+- Requires third-party plugins: `macos.dock` and `io.github.adityavijayvargiya01.coverglow`
 
 **Extras**
 - Curated Wallpapers
@@ -55,8 +59,24 @@ Copy-Item .\pi\* $env:USERPROFILE\.pi\ -Recurse -Force
 
 ```bash
 # Omarchy (Linux)
-cp ./omarchy/shell.json ./omarchy/shell.toml ~/.config/omarchy/ -f
-cp -r ./omarchy/plugins/aditya.menu ./omarchy/plugins/aditya.herdr ~/.config/omarchy/plugins/ -f
+cp ./omarchy/shell.json ./omarchy/shell.toml ./omarchy/dock-pinned-macos.json ~/.config/omarchy/ -f
+cp -r ./omarchy/plugins/aditya.* ~/.config/omarchy/plugins/ -f
+cp -r ./omarchy/extensions/. ~/.config/omarchy/extensions/
+cp -r ./omarchy/scripts/. ~/.config/omarchy/scripts/
+mkdir -p ~/.config/omarchy/defaults
+cp ./omarchy/defaults/agent ~/.config/omarchy/defaults/agent
+
+# Agent themes and Herdr harness symlinks
+cp ./omp/agent/themes/mire.json ~/.omp/agent/themes/
+
+# Compose overlay dependencies (virtualenv is not tracked)
+python -m venv ~/.config/omarchy/plugins/aditya.tweet/.venv
+~/.config/omarchy/plugins/aditya.tweet/.venv/bin/pip install -r ~/.config/omarchy/plugins/aditya.tweet/requirements.txt
+
+mkdir -p ~/.omp/agent/extensions ~/.pi/agent/extensions
+ln -sfn ~/.config/omarchy/plugins/aditya.herdr/harness/omp.ts ~/.omp/agent/extensions/traffic-herdr.ts
+ln -sfn ~/.config/omarchy/plugins/aditya.herdr/harness/pi.ts ~/.pi/agent/extensions/traffic-herdr.ts
+
 omarchy restart shell
 ```
 
