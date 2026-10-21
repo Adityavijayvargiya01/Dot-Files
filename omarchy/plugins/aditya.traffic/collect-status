@@ -24,7 +24,7 @@ FILE_HARNESSES = {
 
 def state_dir() -> Path:
     root = os.environ.get("XDG_STATE_HOME") or str(Path.home() / ".local/state")
-    return Path(root) / "aditya.herdr" / "agents"
+    return Path(root) / "aditya.traffic" / "agents"
 
 
 def pid_alive(pid: int) -> bool:

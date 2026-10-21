@@ -17,7 +17,7 @@ import "verbs.js" as Verbs
 // Hover lists running agents. A left click while red focuses the blocked one.
 BarWidget {
   id: root
-  moduleName: "aditya.herdr"
+  moduleName: "aditya.traffic"
 
   readonly property real dotSize: 12
   readonly property real dotGap: 4

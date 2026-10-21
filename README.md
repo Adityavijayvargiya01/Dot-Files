@@ -20,7 +20,7 @@
 
 **Omarchy**
 - Custom menu plugin (`aditya.menu` — cloned from `omarchy.menu` with custom layout/rows)
-- Herdr status plugin (`aditya.herdr` — traffic-light bar widget for Pi, OpenCode, OMP, and other Herdr agents)
+- Traffic plugin (`aditya.traffic` — traffic-light bar widget for Pi, OpenCode, OMP, and other Herdr agents)
 - Bar widgets (`aditya.grayscale`, `aditya.opacity`, `aditya.ram`)
 - Compose overlay (`aditya.tweet` — draft and post tweets)
 - Menu extension (`omarchy-menu.jsonc` — grayscale toggle), wallpaper rotation script, and macOS dock pins
@@ -74,8 +74,8 @@ python -m venv ~/.config/omarchy/plugins/aditya.tweet/.venv
 ~/.config/omarchy/plugins/aditya.tweet/.venv/bin/pip install -r ~/.config/omarchy/plugins/aditya.tweet/requirements.txt
 
 mkdir -p ~/.omp/agent/extensions ~/.pi/agent/extensions
-ln -sfn ~/.config/omarchy/plugins/aditya.herdr/harness/omp.ts ~/.omp/agent/extensions/traffic-herdr.ts
-ln -sfn ~/.config/omarchy/plugins/aditya.herdr/harness/pi.ts ~/.pi/agent/extensions/traffic-herdr.ts
+ln -sfn ~/.config/omarchy/plugins/aditya.traffic/harness/omp.ts ~/.omp/agent/extensions/traffic-herdr.ts
+ln -sfn ~/.config/omarchy/plugins/aditya.traffic/harness/pi.ts ~/.pi/agent/extensions/traffic-herdr.ts
 
 omarchy restart shell
 ```

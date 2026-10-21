@@ -21,7 +21,7 @@ SAFE_ID = re.compile(r"[^A-Za-z0-9._-]+")
 
 def state_dir() -> Path:
     root = os.environ.get("XDG_STATE_HOME") or str(Path.home() / ".local/state")
-    path = Path(root) / "aditya.herdr" / "agents"
+    path = Path(root) / "aditya.traffic" / "agents"
     path.mkdir(parents=True, exist_ok=True)
     return path
 

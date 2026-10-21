@@ -1,16 +1,16 @@
-// Traffic Herdr: report OpenCode agent state to the shared status files.
+// Traffic: report OpenCode agent state to the shared status files.
 // Lives in the Omarchy plugin; symlink into ~/.config/opencode/plugins/.
 
 import { spawn } from "node:child_process";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-const SOURCE = "aditya.herdr";
+const SOURCE = "aditya.traffic";
 const harness = "opencode";
 const agentId = `opencode-${process.pid}`;
 const pluginDir = join(
   process.env.XDG_CONFIG_HOME || join(homedir(), ".config"),
-  "omarchy/plugins/aditya.herdr",
+  "omarchy/plugins/aditya.traffic",
 );
 const reporter = join(pluginDir, "report-status");
 

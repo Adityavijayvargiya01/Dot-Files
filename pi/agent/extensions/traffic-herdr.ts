@@ -1,4 +1,4 @@
-// Traffic Herdr: report pi agent state to the shared status files.
+// Traffic: report pi agent state to the shared status files.
 // Lives in the Omarchy plugin; symlink into ~/.pi/agent/extensions/.
 
 import { spawn } from "node:child_process";
@@ -11,7 +11,7 @@ const harness = "pi";
 const agentId = `pi-${process.pid}`;
 const pluginDir = join(
   process.env.XDG_CONFIG_HOME || join(homedir(), ".config"),
-  "omarchy/plugins/aditya.herdr",
+  "omarchy/plugins/aditya.traffic",
 );
 const reporter = join(pluginDir, "report-status");
 let currentSessionName: string | undefined;

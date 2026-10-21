@@ -1,4 +1,4 @@
-// Traffic Herdr: report omp agent state to the shared status files.
+// Traffic: report omp agent state to the shared status files.
 // Lives in the Omarchy plugin; symlink into ~/.omp/agent/extensions/.
 // State machine matches Herdr's omp integration (working / blocked / idle).
 
@@ -20,7 +20,7 @@ const harness = "omp";
 const agentId = `omp-${process.pid}`;
 const pluginDir = join(
   process.env.XDG_CONFIG_HOME || join(homedir(), ".config"),
-  "omarchy/plugins/aditya.herdr",
+  "omarchy/plugins/aditya.traffic",
 );
 const reporter = join(pluginDir, "report-status");
 let currentSessionName: string | undefined;
